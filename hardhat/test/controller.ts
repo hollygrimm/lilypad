@@ -163,7 +163,6 @@ describe("Controller", () => {
         token,
         payments,
         storage,
-        users,
         controller,
         tokenAddress,
       } = await loadFixture(setupController)
@@ -565,6 +564,15 @@ describe("Controller", () => {
       expect(balancesAfterAdmin.tokens).to.equal(balancesBeforeAdmin.tokens + resultsCollateral)
 
       await checkAgreement(storage, 'MediationRejected')
+    })
+
+    it("Revert agree on deal when token contract is paused", async function () {
+      const {
+        token,
+        controller,
+      } = await loadFixture(setupController)
+      await token.connect(getWallet('admin')).pause()
+      await expect(agree(controller, 'job_creator')).to.be.revertedWith('ERC20Pausable: token transfer while paused')
     })
 
   })
