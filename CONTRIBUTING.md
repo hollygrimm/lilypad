@@ -58,15 +58,13 @@ These commands start Geth, allocates eth to the admin, faucet, solver, mediator,
 
 #### 2.2 - Compile Contracts
 
-
-
 ```bash
 ./stack compile-contracts
 ```
+
 This compiles the smart contracts and generates Go bindings in `pkg/contract/bindings/contracts`.
+
 #### 2.3 - Deploy Contracts
-
-
 
 ```bash
 ./stack deploy-contracts
@@ -76,13 +74,11 @@ This deploys the smart contracts. Note that services will not have any tokens at
 
 #### 2.4 - Fund Tokens
 
-
-
 ```bash
 ./stack fund-services-tokens
 ./stack balances
 ```
-This funds the services and prints the balances.
+This funds the services with tokens and prints the balances.
 
 ### 3 - Run Services
 
@@ -92,18 +88,34 @@ Run the following commands in separate terminal windows:
 ./stack solver
 ```
 
-Wait for the solver to start, and then run:
+Wait for the solver to start when `🟡 SOL solver registered` is logged, and then run:
 
 ```bash
 ./stack mediator
 ```
 
+If you have a GPU, run the following command in a separate terminal window:
+
+```bash
+./stack resource-provider --offer-gpu 1
+```
+
+Otherwise, if you don't have a GPU:
+
 ```bash
 ./stack resource-provider
 ```
 
+Run Cowsay:
+
 ```bash
 ./stack run cowsay:v0.0.1 -i Message="moo"
+```
+
+Run SDXL:
+
+```bash
+./stack runsdxl sdxl:v0.9-lilypad1 PROMPT="beautiful view of iceland with a record player"
 ```
 
 ## Stopping the Stack
@@ -136,4 +148,14 @@ Whenever you make changes to the smart contracts, regenerate the Go bindings in 
 
 ```bash
 ./stack compile-contracts
+```
+
+## Troubleshooting
+
+### Receive Buffer Size Error
+
+`failed to sufficiently increase receive buffer size` See https://github.com/quic-go/quic-go/wiki/UDP-Receive-Buffer-Size for details. Fix for Linux:
+```
+sudo sysctl -w net.core.rmem_max=2500000
+sudo sysctl -w net.core.wmem_max=2500000
 ```
